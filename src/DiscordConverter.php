@@ -104,6 +104,7 @@ class DiscordConverter extends BaseConverter
 			case 'requested changes in':
 			case 'closed without merging': return 16007990;
 
+			case 'closed as not planned':
 			case 'closed'     : return 8540383;
 			case 'merged'     : return 7291585;
 
@@ -340,6 +341,14 @@ class DiscordConverter extends BaseConverter
 		&&  $this->Payload->action !== 'transferred' )
 		{
 			throw new NotImplementedException( $this->EventType, $this->Payload->action );
+		}
+
+		if( $this->Payload->action === 'closed' )
+		{
+			if( $this->Payload->issue->state_reason === 'not_planned' )
+			{
+				$this->Payload->action = 'closed as not planned';
+			}
 		}
 
 		$Embed = [
@@ -649,6 +658,8 @@ class DiscordConverter extends BaseConverter
 	private function FormatDiscussionEvent( ) : array
 	{
 		if( $this->Payload->action === 'edited'
+		||  $this->Payload->action === 'labeled'
+		||  $this->Payload->action === 'unlabeled'
 		||  $this->Payload->action === 'answered'
 		||  $this->Payload->action === 'unanswered' )
 		{
