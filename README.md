@@ -1,9 +1,24 @@
-This script acts as a web hook for [GitHub](https://github.com/) events, processes them,
-and returns messages which can be sent out to an IRC channel or a Discord webhook,
-depending on the converter used.
+# Github Webhooks RocketChat Announcer
 
-See `examples/discord.php` for a basic application that sends webhooks to Discord.  
-See `examples/irker.php` for a basic application that sends messages to IRC.  
+Takes [GitHub](https://github.com/) events and announces the events based on your configuration options over Rocket Chat.
+
+Here is the [Github Events](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads) documentation.
+
+
+## Github Action / Workflows Setup stuff to check out
+
+* https://github.com/marketplace/actions/php-insights
+* https://github.com/marketplace/actions/php_codesniffer
+* https://github.com/marketplace/actions/php-lint
+* https://github.com/marketplace/actions/composer-php
+* https://github.com/marketplace/actions/php-runner
+* https://github.com/marketplace/actions/php-codesniffer
+* https://github.com/marketplace/actions/phpstan-php-actions
+* https://github.com/daniL16/action-notify-rocketChat
+* https://github.com/apampurin/action-notify-rocketChat
+* https://github.com/jadolg/rocketchat-notification-action
+* https://github.com/RocketChat/Rocket.Chat.GitHub.Action.Notification
+
 
 ## GitHubWebHook
 `GitHubWebHook.php` accepts, processes and validates an event,
@@ -31,25 +46,9 @@ Retuns true if HMAC hex digest of the payload matches GitHub's, false otherwise.
 Returns true if a request came from GitHub's IP range, false otherwise.
 ⚠ Use `ValidateHubSignature` instead.
 
-## IrcConverter
-`IrcConverter.php` accepts input from previous script and outputs
-a colored string which can be sent to IRC.
+### Errors
 
-#### __construct( $EventType, $Payload )
-`IrcConverter` constructor takes 3 paramaters (last one is optional).
-All you need to do is pass data after parsing the message with `GitHubWebHook`
-like so: `new IrcConverter( $Hook->GetEventType(), $Hook->GetPayload() );`
-
-URL shortener paramater takes a function, and that function should accept
-a single string argument containing an url. If your function fails to
-shorten an url or do anything with it, your function must return the
-original url back.
-
-#### GetMessage()
-After calling the constructor, using this function will return
-a string which can be sent to an IRC server.
-
-Throws `NotImplementedException` when you pass an event that
+hrows `NotImplementedException` when you pass an event that
 is not parsed anyhow, and throws `IgnoredEventException` for
 `fork`, `watch` and `status` events which are ignored by design.
 
